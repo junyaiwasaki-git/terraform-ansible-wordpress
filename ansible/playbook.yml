@@ -40,10 +40,9 @@
         delay: 5
 
     - name: Install Python MySQL library
-      ansible.builtin.apt:
-        name: python3-pymysql
+      ansible.builtin.dnf:
+        name: python3-PyMySQL
         state: present
-        update_cache: yes
       become: true
 
     - name: Create WordPress database
