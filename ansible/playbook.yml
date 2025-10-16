@@ -51,6 +51,17 @@
         executable: pip3
       become: true
 
+    - name: Set MariaDB root password
+      community.mysql.mysql_user:
+        name: root
+        host_all: yes
+        password: "{{ mysql_root_password }}"
+        priv: "*.*:ALL"
+        state: present
+      become: true
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+
     - name: Create WordPress database
       mysql_db:
         name: "{{ db_name }}"

@@ -115,3 +115,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-west-2
 
+      # 14. mysqlパスワード
+      - name: Run Ansible Playbook
+        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+        env:
+          mysql_root_password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+
+
