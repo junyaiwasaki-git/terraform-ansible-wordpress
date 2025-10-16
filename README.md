@@ -1,0 +1,2 @@
+# terraform-ansible-wordpress
+TerraformとAnsibleでWordPressを自動構築するCI/CD学習用
