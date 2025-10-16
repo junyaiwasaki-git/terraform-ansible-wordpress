@@ -53,17 +53,11 @@
 
     - name: Change MariaDB root authentication method to password
       become: true
-      ansible.builtin.shell: |
-        sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '{{ mysql_root_password }}'; FLUSH PRIVILEGES;"
-      ignore_errors: true
-
-    - name: Set MariaDB root password
-      become: true
       community.mysql.mysql_user:
         name: root
-        host_all: yes
+        host: localhost
         password: "{{ mysql_root_password }}"
-        priv: "*.*:ALL"
+        plugin: mysql_native_password
         state: present
         check_implicit_admin: yes
       vars:
