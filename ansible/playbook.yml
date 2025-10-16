@@ -51,6 +51,22 @@
         executable: pip3
       become: true
 
+    - name: Change MariaDB root authentication method to password
+      become: true
+      ansible.builtin.shell: |
+        mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('{{ mysql_root_password }}'); FLUSH PRIVILEGES;"
+      ignore_errors: true
+
+    - name: Set MariaDB root password
+      become: true
+      community.mysql.mysql_user:
+        name: root
+        host_all: yes
+        password: "{{ mysql_root_password }}"
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        check_implicit_admin: yes
+
     - name: Set MariaDB root password
       community.mysql.mysql_user:
         name: root
