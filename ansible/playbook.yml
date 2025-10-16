@@ -84,11 +84,19 @@
         state: present
         login_user: root
         login_password: "{{ mysql_root_password }}"
+  
     - name: Download latest WordPress
       get_url:
         url: https://wordpress.org/latest.tar.gz
         dest: /tmp/latest.tar.gz
         mode: '0644'
+
+    - name: Create /var/www/html/blog directory
+      file:
+        path: /var/www/html/blog
+        state: directory
+        mode: '0755'
+      become: true
 
     - name: Extract WordPress directly into /var/www/html/blog
       unarchive:
