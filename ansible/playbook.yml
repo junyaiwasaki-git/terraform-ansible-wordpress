@@ -84,19 +84,22 @@
         state: present
         login_user: root
         login_password: "{{ mysql_root_password }}"
-
     - name: Download latest WordPress
       get_url:
         url: https://wordpress.org/latest.tar.gz
         dest: /tmp/latest.tar.gz
         mode: '0644'
 
-    - name: Extract WordPress
+    - name: Extract WordPress directly into /var/www/html/blog
       unarchive:
         src: /tmp/latest.tar.gz
-        dest: /var/www/html/
+        dest: /var/www/html/blog/
         remote_src: yes
         extra_opts: [--strip-components=1]
+        creates: /var/www/html/blog/index.php
+        owner: apache
+        group: apache
+        mode: '0755'
 
     - name: Copy wp-config.php from sample
       command: cp /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
@@ -112,11 +115,6 @@
         - { regexp: "define\\('DB_NAME',", line: "define('DB_NAME', '{{ db_name }}');" }
         - { regexp: "define\\('DB_USER',", line: "define('DB_USER', '{{ db_user }}');" }
         - { regexp: "define\\('DB_PASSWORD',", line: "define('DB_PASSWORD', '{{ db_password }}');" }
-
-    - name: Copy WordPress to /var/www/html
-      command: cp -r /var/www/html/wordpress/* /var/www/html/
-      args:
-        creates: /var/www/html/index.php
 
     - name: Create /var/www/html/blog directory
       file:
