@@ -45,6 +45,7 @@ jobs:
       - name: Get Security Group ID
         id: get_sg
         run: |
+          cd terraform
           SG_ID=$(terraform output -raw security_group_id)
           echo "SG_ID=$SG_ID" >> $GITHUB_ENV
           echo "SG_ID=$SG_ID"
