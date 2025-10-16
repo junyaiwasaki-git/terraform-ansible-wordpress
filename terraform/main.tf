@@ -100,7 +100,7 @@ resource "aws_instance" "webap_server" {
   }
 
   tags = {
-    Name = "CL_iwasaki_j_learn_terraform"
+    Name = "CL_iwasaki_j_terraform_wordpress"
   }
 }
 
