@@ -96,7 +96,9 @@ jobs:
 
       # 12. Ansibleプレイブック実行
       - name: Run Ansible Playbook
-        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+        run: |
+          ansible-playbook -i ansible/inventory.ini ansible/playbook.yml \
+            -e "mysql_root_password=${{ secrets.MYSQL_ROOT_PASSWORD }}"
 
       # 13. 最後にSSH許可削除（セキュリティ向上）
       - name: Revoke GitHub Runner IP
@@ -114,11 +116,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-west-2
-
-      # 14. mysqlパスワード
-      - name: Run Ansible Playbook
-        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
-        env:
-          mysql_root_password: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-
 
