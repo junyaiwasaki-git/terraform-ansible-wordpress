@@ -60,7 +60,11 @@
         plugin: mysql_native_password
         state: present
         check_implicit_admin: yes
-        login_unix_socket: /var/lib/mysql/mysql.sock
+        login_unix_socket: "{{ item }}"
+      loop:
+        - /var/lib/mysql/mysql.sock
+        - /run/mysqld/mysqld.sock
+      ignore_errors: true
       vars:
         ansible_python_interpreter: /usr/bin/python3
 
