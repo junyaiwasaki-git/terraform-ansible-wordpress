@@ -96,6 +96,7 @@
         src: /tmp/latest.tar.gz
         dest: /var/www/html/
         remote_src: yes
+        extra_opts: [--strip-components=1]
 
     - name: Copy wp-config.php from sample
       command: cp /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
