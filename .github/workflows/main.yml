@@ -29,7 +29,9 @@ jobs:
 
       # 4. Terraform apply
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: |
+          cd terraform
+          terraform apply -auto-approve
 
       # 5. EC2パブリックIP取得
       - name: Get EC2 Public IP
