@@ -141,6 +141,11 @@
         - regexp: '^define\s*\(\s*''DB_PASSWORD'',' 
           line: 'define( ''DB_PASSWORD'', ''{{ db_password }}'' );'
 
+    - name: Copy WordPress to /var/www/html
+      command: cp -r /var/www/html/wordpress/* /var/www/html/
+      args:
+        creates: /var/www/html/index.php
+
     - name: Set correct permissions
       file:
         path: /var/www/html/
