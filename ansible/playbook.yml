@@ -116,9 +116,12 @@
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
       loop:
-        - { regexp: '^define\s*\(\s*'DB_NAME',", line: "define( 'DB_NAME', '{{ db_name }}' );' }
-        - { regexp: '^define\s*\(\s*'DB_USER',", line: "define( 'DB_USER', '{{ db_user }}' );' }
-        - { regexp: '^define\s*\(\s*'DB_PASSWORD',", line: "define( 'DB_PASSWORD', '{{ db_password }}' );' }
+        - regexp: '^define\\s*\\(\\s*\'DB_NAME\','
+          line: "define('DB_NAME', '{{ db_name }}');"
+        - regexp: '^define\\s*\\(\\s*\'DB_USER\','
+          line: "define('DB_USER', '{{ db_user }}');"
+        - regexp: '^define\\s*\\(\\s*\'DB_PASSWORD\','
+          line: "define('DB_PASSWORD', '{{ db_password }}');"
 
     - name: Set correct permissions
       file:
