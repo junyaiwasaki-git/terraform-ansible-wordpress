@@ -7,6 +7,13 @@
     db_name: aiueo
     db_user: aiueo
     db_password: aiueo
+    mariadb_service_names:
+      - mariadb
+      - mariadb.service
+      - mariadb105
+      - mariadb105.service
+      - mysqld
+      - mysqld.service
 
   tasks:
     - name: Install required packages
@@ -29,15 +36,19 @@
 
     - name: Start and enable MariaDB
       systemd:
-        name: mariadb
+        name: "{{ item }}"
         state: started
         enabled: yes
+      loop: "{{ mariadb_service_names }}"
+      register: mariadb_start
+      ignore_errors: yes
 
     - name: Wait for MariaDB to start
       wait_for:
-        path: /run/mysqld/mysqld.sock
-        state: present
-        timeout: 30
+        host: 127.0.0.1
+        port: 3306
+        state: started
+        timeout: 60
 
     - name: Ensure pip is installed
       ansible.builtin.dnf:
@@ -52,6 +63,7 @@
       become: true
 
     - name: Change MariaDB root authentication method to password
+      become: true
       community.mysql.mysql_user:
         name: root
         host: localhost
@@ -59,8 +71,11 @@
         plugin: mysql_native_password
         state: present
         check_implicit_admin: yes
-        login_unix_socket: /run/mysqld/mysqld.sock
-      become: true
+        login_unix_socket: "{{ item }}"
+      loop: 
+        - /var/lib/mysql/mysql.sock 
+        - /run/mysqld/mysqld.sock 
+      ignore_errors: true
       vars:
         ansible_python_interpreter: /usr/bin/python3
 
