@@ -10,8 +10,6 @@
     mariadb_service_names:
       - mariadb
       - mariadb.service
-      - mariadb105
-      - mariadb105.service
       - mysqld
       - mysqld.service
 
@@ -62,7 +60,6 @@
       become: true
 
     - name: Change MariaDB root authentication method to password
-      become: true
       community.mysql.mysql_user:
         name: root
         host: localhost
@@ -70,11 +67,8 @@
         plugin: mysql_native_password
         state: present
         check_implicit_admin: yes
-        login_unix_socket: "{{ item }}"
-      loop: 
-        - /var/lib/mysql/mysql.sock 
-        - /run/mysqld/mysqld.sock 
-      ignore_errors: true
+        login_unix_socket: /var/lib/mysql/mysql.sock
+      become: true
       vars:
         ansible_python_interpreter: /usr/bin/python3
 
@@ -111,7 +105,7 @@
     - name: Extract WordPress directly into /var/www/html/wordpress
       unarchive:
         src: /tmp/latest.tar.gz
-        dest: /var/www/html/wordpress/
+        dest: /var/www/html/wordpress
         remote_src: yes
         extra_opts: [--strip-components=1]
         creates: /var/www/html/wordpress/index.php
@@ -142,9 +136,10 @@
           line: 'define( ''DB_PASSWORD'', ''{{ db_password }}'' );'
 
     - name: Copy WordPress to /var/www/html
-      command: cp -r /var/www/html/wordpress/* /var/www/html/
+      command: cp -r /var/www/html/wordpress/. /var/www/html/
       args:
         creates: /var/www/html/index.php
+      become: true
 
     - name: Set correct permissions
       file:
