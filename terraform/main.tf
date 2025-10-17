@@ -28,7 +28,7 @@ data "aws_ami" "amazon_linux" {
 # セキュリティグループ設定
 # ===========================
 resource "aws_security_group" "web_sg" {
-  name        = "CL_iwasaki_sg"
+  name        = "CL_iwasaki_sg2"
   description = "Security Group with intentional holes"
   vpc_id      = "vpc-0f9e349a1dfd9f1bf"
 
@@ -39,14 +39,6 @@ resource "aws_security_group" "web_sg" {
     protocol    = "tcp"
     cidr_blocks = ["118.237.255.201/32"]
     description = "Allow SSH from admin IP only"
-  }
-
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["118.237.255.201/32"]
-    description = "Allow Tomcat from admin IP"
   }
 
   # HTTP許可
