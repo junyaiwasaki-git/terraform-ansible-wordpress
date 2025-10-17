@@ -38,6 +38,7 @@
         port: 3306
         state: started
         delay: 5
+        timeout: 30
 
     - name: Ensure pip is installed
       ansible.builtin.dnf:
@@ -91,20 +92,20 @@
         dest: /tmp/latest.tar.gz
         mode: '0644'
 
-    - name: Create /var/www/html/blog directory
+    - name: Create /var/www/html/wordpress directory
       file:
-        path: /var/www/html/blog
+        path: /var/www/html/wordpress
         state: directory
         mode: '0755'
       become: true
 
-    - name: Extract WordPress directly into /var/www/html/blog
+    - name: Extract WordPress directly into /var/www/html/wordpress
       unarchive:
         src: /tmp/latest.tar.gz
-        dest: /var/www/html/blog/
+        dest: /var/www/html/wordpress/
         remote_src: yes
         extra_opts: [--strip-components=1]
-        creates: /var/www/html/blog/index.php
+        creates: /var/www/html/wordpress/index.php
         owner: apache
         group: apache
         mode: '0755'
@@ -124,16 +125,10 @@
         - { regexp: "define\\('DB_USER',", line: "define('DB_USER', '{{ db_user }}');" }
         - { regexp: "define\\('DB_PASSWORD',", line: "define('DB_PASSWORD', '{{ db_password }}');" }
 
-    - name: Create /var/www/html/blog directory
-      file:
-        path: /var/www/html/blog
-        state: directory
-        mode: '0755'
-
-    - name: Copy WordPress to /var/www/html/blog
-      command: cp -r /var/www/html/wordpress/* /var/www/html/blog/
+    - name: Copy WordPress to /var/www/html/wordpress
+      command: cp -r /var/www/html/wordpress/* /var/www/html/wordpress/
       args:
-        creates: /var/www/html/blog/index.php
+        creates: /var/www/html/wordpress/index.php
 
     - name: Set correct permissions
       file:
