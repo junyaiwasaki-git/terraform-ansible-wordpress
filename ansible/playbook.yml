@@ -35,9 +35,8 @@
 
     - name: Wait for MariaDB to start
       wait_for:
-        port: 3306
-        state: started
-        delay: 5
+        path: /run/mysqld/mysqld.sock
+        state: present
         timeout: 30
 
     - name: Ensure pip is installed
@@ -53,7 +52,6 @@
       become: true
 
     - name: Change MariaDB root authentication method to password
-      become: true
       community.mysql.mysql_user:
         name: root
         host: localhost
@@ -61,11 +59,8 @@
         plugin: mysql_native_password
         state: present
         check_implicit_admin: yes
-        login_unix_socket: "{{ item }}"
-      loop:
-        - /var/lib/mysql/mysql.sock
-        - /run/mysqld/mysqld.sock
-      ignore_errors: true
+        login_unix_socket: /run/mysqld/mysqld.sock
+      become: true
       vars:
         ansible_python_interpreter: /usr/bin/python3
 
@@ -109,6 +104,14 @@
         owner: apache
         group: apache
         mode: '0755'
+
+    - name: Copy wp-config.php from sample
+      copy:
+        src: /var/www/html/wordpress/wp-config-sample.php
+        dest: /var/www/html/wordpress/wp-config.php
+        remote_src: yes
+      args:
+        creates: /var/www/html/wordpress/wp-config.php
 
     - name: Update wp-config.php for database settings
       lineinfile:
